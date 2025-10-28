@@ -1,6 +1,6 @@
 # 🧠 Smart Contract Analyzer
 
-An AI-powered SaaS tool that helps Users analyze contracts by automatically summarizing clauses, obligations, and potential risks.
+A tool that helps Users analyze contracts by automatically summarizing clauses, obligations, and potential risks.
 
 ---
 
