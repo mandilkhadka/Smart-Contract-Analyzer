@@ -81,3 +81,5 @@ gem "cloudinary"
 
 # active storage processing
 gem "image_processing", "~> 1.2"
+
+gem "hotwire-livereload", "~> 2.1", group: :development
