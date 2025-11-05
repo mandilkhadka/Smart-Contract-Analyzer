@@ -5,6 +5,14 @@ class ContractsController < ApplicationController
 
   def create
     @contract = Contract.new(strong_params)
+      if @contract.save
+        if @contract.file.attached?
+          process_file(@contract.file)
+        else
+          send_question
+        end
+        Contract.create
+      end
   end
 
 
