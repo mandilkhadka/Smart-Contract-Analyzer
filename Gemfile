@@ -84,4 +84,8 @@ gem "image_processing", "~> 1.2"
 
 gem "hotwire-livereload", "~> 2.1", group: :development
 
+# Other llm
 gem "ruby_llm", "~> 1.6.4"
+
+# Ollama ai
+# gem 'ollama-ai', '~> 1.2.1'
