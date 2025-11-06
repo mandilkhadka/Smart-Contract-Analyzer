@@ -1,0 +1,7 @@
+<h2>Answer page</h2>
+<% if @contract.file.attached? %>
+  <strong>File:</strong>
+  <%= link_to @contract.file.filename, rails_blob_path(@contract.file, disposition: "attachment") %>
+<% end %>
+<br>
+<%= @contract.generated_output %>

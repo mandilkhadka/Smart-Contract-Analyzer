@@ -1,0 +1,19 @@
+    <div class="card-title my-4 text-center fw-bold text-primary">
+      <h2>Know more about your document</h2>
+    </div>
+<div class="card shadow-sm rounded-4 border-0 mx-auto" style="max-width: 650px;">
+  <div class="card p-5 border-primary bg-light">
+    <div class="fw-semibold text-secondary mb-3 text-center">
+      <h4>Analyze your document the right way </h4>
+    </div>
+    <div class="border border-dark mt-3 p-4">
+      <%= simple_form_for @contract do |f| %>
+        <%= f.input :file, label: "Upload a file(PDF, Image)", required: true,  input_html: { class: "form-control rounded-3 shadow-sm" },
+                  label_html: { class: "form-label fw-semibold" }  %>
+        <%= f.input :question, placeholder: "Ask anything about the document", label: "Question",  input_html: { class: "form-control rounded-3 shadow-sm" },
+                  label_html: { class: "form-label fw-semibold" }   %>
+        <%= f.button :submit, "Contract Details & Summary", class: "btn btn-primary btn-lg rounded-3 shadow-sm fw-semibold" %>
+      <% end %>
+    </div>
+  </div>
+</div>
