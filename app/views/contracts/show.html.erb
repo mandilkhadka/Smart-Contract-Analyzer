@@ -1,7 +1,14 @@
-<h2>Answer page</h2>
-<% if @contract.file.attached? %>
-  <strong>File:</strong>
-  <%= link_to @contract.file.filename, rails_blob_path(@contract.file, disposition: "attachment") %>
-<% end %>
-<br>
-<%= @contract.generated_output %>
+<div class="border border-secondary m-4 p-4 d-flex justify-content-center bg-primary text-dark bg-opacity-25">
+  <h2>Answer page</h2>
+</div>
+
+<div class="m-4 p-3 bg-success text-dark bg-opacity-25">
+  <div class="text-nowrap bg-body-secondary border p-3 ">
+  <% if @contract.file.attached? %>
+    <strong>File:</strong>
+    <%= link_to @contract.file.filename, rails_blob_path(@contract.file, disposition: "attachment") %>
+  <% end %>
+  </div>
+  <br>
+  <%= @contract.generated_output %>
+</div>
