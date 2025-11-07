@@ -1,14 +1,105 @@
-<div class="border border-secondary m-4 p-4 d-flex justify-content-center bg-primary text-dark bg-opacity-25">
-  <h2>Answer page</h2>
-</div>
-
-<div class="m-4 p-3 bg-success text-dark bg-opacity-25">
-  <div class="text-nowrap bg-body-secondary border p-3 ">
-  <% if @contract.file.attached? %>
-    <strong>File:</strong>
-    <%= link_to @contract.file.filename, rails_blob_path(@contract.file, disposition: "attachment") %>
-  <% end %>
+<div class="container my-5">
+  <!-- Header -->
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-primary">Smart Contract Analysis Result</h2>
+    <p class="text-muted">AI-based risk and summary analysis of your uploaded contract</p>
   </div>
-  <br>
-  <%= @contract.generated_output %>
+
+  <!-- File Information -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title text-secondary">Uploaded File</h5>
+      <% if @contract.file.attached? %>
+        <p class="card-text">
+          <strong>File:</strong>
+          <%= link_to @contract.file.filename, rails_blob_path(@contract.file, disposition: "attachment"), class: "link-primary" %>
+        </p>
+      <% else %>
+        <p class="text-muted fst-italic">No file attached.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Raw AI Output -->
+  <% if @contract.generated_output.present? %>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title text-secondary">AI Raw Output</h5>
+        <pre class="bg-light p-3 rounded border"><%= @contract.generated_output %></pre>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Risk Analysis -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title text-danger">🚨 Risk Analysis</h5>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="border rounded p-3 mb-3 bg-light">
+            <h6 class="text-danger fw-bold">Critical Risks</h6>
+            <ul class="mb-0">
+              <% (@critical || []).each do |r| %>
+                <li><%= r %></li>
+              <% end %>
+            </ul>
+            <% if (@critical || []).empty? %>
+              <p class="text-muted">No critical risks detected.</p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="border rounded p-3 mb-3 bg-light">
+            <h6 class="text-warning fw-bold">Moderate Risks</h6>
+            <ul class="mb-0">
+              <% (@moderate || []).each do |r| %>
+                <li><%= r %></li>
+              <% end %>
+            </ul>
+            <% if (@moderate || []).empty? %>
+              <p class="text-muted">No moderate risks detected.</p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="border rounded p-3 mb-3 bg-light">
+            <h6 class="text-success fw-bold">Low Risks</h6>
+            <ul class="mb-0">
+              <% (@low || []).each do |r| %>
+                <li><%= r %></li>
+              <% end %>
+            </ul>
+            <% if (@low || []).empty? %>
+              <p class="text-muted">No low risks detected.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overall Risk Score -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body text-center">
+      <h5 class="card-title text-primary">Overall Risk Score</h5>
+      <div class="display-4 fw-bold text-dark"><%= @risk_score || 0 %>%</div>
+      <p class="text-muted mb-0">Lower score means higher risk exposure.</p>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title text-secondary">Summary</h5>
+      <p class="card-text"><%= @summary || "No summary available." %></p>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="text-center mt-4">
+    <%= link_to "⬅ Back to Upload", new_contract_path, class: "btn btn-primary px-4 py-2" %>
+  </div>
 </div>
