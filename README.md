@@ -28,3 +28,33 @@ This app automates the process by extracting text from uploaded PDFs, identifyin
 - **File Handling:** Cloudinary
 
 ---
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Ruby 3.2+
+- Rails 7+
+- PostgreSQL
+
+### Installation
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/centsible.git
+cd centsible
+
+# Install dependencies
+bundle install
+
+# Setup the database
+rails db:create db:migrate db:seed
+
+# Run the app
+bin/dev
+```
+
+Then open http://localhost:3000 🎉
+
+---
+
