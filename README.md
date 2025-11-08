@@ -41,8 +41,8 @@ This app automates the process by extracting text from uploaded PDFs, identifyin
 ### Installation
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/centsible.git
-cd centsible
+git clone https://github.com/yourusername/Smart-Contract-Analyzer
+cd Smart-Contract-Analyzer
 
 # Install dependencies
 bundle install
@@ -57,4 +57,3 @@ bin/dev
 Then open http://localhost:3000 🎉
 
 ---
-
