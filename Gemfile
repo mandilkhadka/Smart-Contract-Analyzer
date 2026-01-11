@@ -89,3 +89,13 @@ gem "ruby_llm", "~> 1.6.4"
 
 # Ollama ai
 # gem 'ollama-ai', '~> 1.2.1'
+
+# PDF processing
+gem "pdf-reader", "~> 2.11"
+
+# PDF generation
+gem "prawn", "~> 2.4"
+gem "prawn-table", "~> 0.2"
+
+# Vite Rails for React
+gem "vite_rails"
