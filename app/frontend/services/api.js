@@ -38,6 +38,54 @@ class ApiService {
     return response.json();
   }
 
+  async getContracts() {
+    const response = await fetch(`${API_BASE_URL}/contracts`, {
+      headers: {
+        'Accept': 'application/json',
+        'X-CSRF-Token': this.getCSRFToken(),
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to fetch contracts');
+    }
+
+    return response.json();
+  }
+
+  async deleteContract(id) {
+    const response = await fetch(`${API_BASE_URL}/contracts/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRF-Token': this.getCSRFToken(),
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to delete contract');
+    }
+
+    return response.json();
+  }
+
+  async getStatistics() {
+    const response = await fetch(`${API_BASE_URL}/contracts/statistics`, {
+      headers: {
+        'Accept': 'application/json',
+        'X-CSRF-Token': this.getCSRFToken(),
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to fetch statistics');
+    }
+
+    return response.json();
+  }
+
   async exportPDF(id) {
     const response = await fetch(`${API_BASE_URL}/contracts/${id}/export`, {
       headers: {
@@ -54,6 +102,28 @@ class ApiService {
     const a = document.createElement('a');
     a.href = url;
     a.download = `contract_analysis_${id}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  async exportJSON(id) {
+    const response = await fetch(`${API_BASE_URL}/contracts/${id}/export_json`, {
+      headers: {
+        'X-CSRF-Token': this.getCSRFToken(),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to export JSON');
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `contract_analysis_${id}.json`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);

@@ -76,6 +76,43 @@ module Api
         end
       end
 
+      def index
+        contracts = Contract.order(created_at: :desc).limit(100)
+        
+        contracts_data = contracts.map do |contract|
+          begin
+            analysis = contract.generated_output.present? ? JSON.parse(contract.generated_output) : {}
+          rescue
+            analysis = {}
+          end
+
+          critical = analysis["critical_risks"] || []
+          moderate = analysis["moderate_risks"] || []
+          low = analysis["low_risks"] || []
+          risk_score = calculate_risk_score(critical, moderate, low)
+
+          {
+            id: contract.id,
+            file_name: contract.file.attached? ? contract.file.filename.to_s : nil,
+            file_url: contract.file.attached? ? rails_blob_path(contract.file, only_path: false, host: request.host_with_port) : nil,
+            question: contract.question,
+            risk_score: risk_score,
+            status: contract.generated_output.present? ? 'completed' : 'processing',
+            created_at: contract.created_at,
+            updated_at: contract.updated_at
+          }
+        end
+
+        render json: { contracts: contracts_data }
+      end
+
+      def destroy
+        @contract = Contract.find(params[:id])
+        @contract.destroy
+        
+        render json: { message: 'Contract deleted successfully' }
+      end
+
       def export
         @contract = Contract.find(params[:id])
         
@@ -91,6 +128,78 @@ module Api
           filename: "contract_analysis_#{@contract.id}.pdf",
           type: 'application/pdf',
           disposition: 'attachment'
+      end
+
+      def export_json
+        @contract = Contract.find(params[:id])
+        
+        begin
+          analysis = JSON.parse(@contract.generated_output)
+        rescue
+          analysis = {}
+        end
+
+        critical = analysis["critical_risks"] || []
+        moderate = analysis["moderate_risks"] || []
+        low = analysis["low_risks"] || []
+        summary = analysis["summary"] || "No summary available."
+        risk_score = calculate_risk_score(critical, moderate, low)
+
+        export_data = {
+          contract_id: @contract.id,
+          file_name: @contract.file.attached? ? @contract.file.filename.to_s : nil,
+          question: @contract.question,
+          analyzed_at: @contract.updated_at.iso8601,
+          risk_score: risk_score,
+          risk_level: risk_color_class(risk_score),
+          critical_risks: critical,
+          moderate_risks: moderate,
+          low_risks: low,
+          summary: summary
+        }
+
+        send_data export_data.to_json,
+          filename: "contract_analysis_#{@contract.id}.json",
+          type: 'application/json',
+          disposition: 'attachment'
+      end
+
+      def statistics
+        total_contracts = Contract.count
+        completed_contracts = Contract.where.not(generated_output: nil).where.not(generated_output: '').count
+        
+        contracts = Contract.where.not(generated_output: nil).where.not(generated_output: '')
+        risk_scores = []
+        critical_count = 0
+        moderate_count = 0
+        low_count = 0
+
+        contracts.each do |contract|
+          begin
+            analysis = JSON.parse(contract.generated_output)
+            critical = analysis["critical_risks"] || []
+            moderate = analysis["moderate_risks"] || []
+            low = analysis["low_risks"] || []
+            risk_score = calculate_risk_score(critical, moderate, low)
+            risk_scores << risk_score
+            critical_count += critical.size
+            moderate_count += moderate.size
+            low_count += low.size
+          rescue
+            next
+          end
+        end
+
+        avg_risk_score = risk_scores.any? ? (risk_scores.sum.to_f / risk_scores.size).round(2) : 0
+
+        render json: {
+          total_contracts: total_contracts,
+          completed_contracts: completed_contracts,
+          average_risk_score: avg_risk_score,
+          total_critical_risks: critical_count,
+          total_moderate_risks: moderate_count,
+          total_low_risks: low_count
+        }
       end
 
       private
@@ -170,7 +279,10 @@ module Api
       def handle_error(exception)
         Rails.logger.error exception.message
         Rails.logger.error exception.backtrace.join("\n")
-        render json: { error: exception.message }, status: :internal_server_error
+        
+        # Don't expose sensitive error details in production
+        error_message = Rails.env.development? ? exception.message : "An error occurred. Please try again later."
+        render json: { error: error_message }, status: :internal_server_error
       end
     end
   end

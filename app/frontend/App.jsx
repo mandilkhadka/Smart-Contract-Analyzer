@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from '
 import UploadForm from './components/ContractUpload/UploadForm';
 import RiskDashboard from './components/AnalysisResults/RiskDashboard';
 import ExportButton from './components/ExportButton';
+import ContractList from './components/ContractList/ContractList';
+import Statistics from './components/Statistics/Statistics';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import Toast from './components/Toast';
@@ -181,7 +183,9 @@ const App = () => {
         <main className="container" style={{ flex: 1, paddingBottom: '2rem' }}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/contracts" element={<ContractList />} />
             <Route path="/contracts/:id" element={<ContractShowPage />} />
+            <Route path="/statistics" element={<Statistics />} />
           </Routes>
         </main>
         <Footer />
