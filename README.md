@@ -28,23 +28,10 @@ This app automates the process by extracting text from uploaded PDFs, identifyin
 
 ---
 
-## 🖼️ Screenshots
+## 🖼️ Screenshot
 
-### Home Page - Upload Interface
-![Upload Page](screenshots/upload-page.png)
-*Clean, intuitive drag-and-drop interface for uploading contracts*
-
-### Analysis Results Dashboard
-![Analysis Dashboard](screenshots/analysis-dashboard.png)
-*Comprehensive risk analysis with visual risk score and categorized risks*
-
-### Contract History
-![Contract History](screenshots/contract-history.png)
-*View and manage all your analyzed contracts*
-
-### Statistics Dashboard
-![Statistics](screenshots/statistics.png)
-*Analytics showing overall statistics across all contracts*
+![Home Page](screenshots/home.png)
+*Clean, intuitive drag-and-drop interface for uploading and analyzing contracts*
 
 ---
 
