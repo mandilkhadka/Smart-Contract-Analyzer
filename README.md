@@ -28,12 +28,6 @@ This app automates the process by extracting text from uploaded PDFs, identifyin
 
 ---
 
-## 🖼️ Screenshot
-
-![Home Page](screenshots/home.png)
-
----
-
 ## 🧰 Tech Stack
 
 - **Backend:** Ruby on Rails 7+
