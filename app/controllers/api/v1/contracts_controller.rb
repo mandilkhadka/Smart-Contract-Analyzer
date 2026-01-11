@@ -210,8 +210,19 @@ module Api
 
       def process_file_async(contract)
         # Process synchronously for now, can be moved to background job later
-        process_file(contract)
-        contract.update(generated_output: @response.content)
+        begin
+          process_file(contract)
+          if @response && @response.respond_to?(:content) && @response.content.present?
+            contract.update(generated_output: @response.content)
+          else
+            Rails.logger.error "Failed to get response content for contract #{contract.id}"
+            contract.update(generated_output: { error: "Failed to analyze contract" }.to_json)
+          end
+        rescue => e
+          Rails.logger.error "Error processing contract #{contract.id}: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          contract.update(generated_output: { error: "An error occurred during analysis: #{e.message}" }.to_json)
+        end
       end
 
       def process_file(contract)
@@ -245,8 +256,18 @@ module Api
         PROMPT
 
         # Extract text from PDF if needed
-        file_url = contract.file.url
-        extracted_text = PdfExtractor.new(contract.file).extract if contract.file.attached?
+        extracted_text = nil
+        file_url = nil
+        
+        if contract.file.attached?
+          begin
+            file_url = contract.file.url
+            extracted_text = PdfExtractor.new(contract.file).extract
+          rescue => e
+            Rails.logger.error "Error extracting text or getting file URL: #{e.message}"
+          end
+        end
+        
         question_text = contract.question || "Analyze this contract and provide a risk assessment."
 
         @ruby_llm_chat = RubyLLM.chat(model: "gemini-2.5-flash")
@@ -254,8 +275,10 @@ module Api
         
         if extracted_text.present?
           @response = @ruby_llm_chat.ask("#{question_text}\n\nContract text:\n#{extracted_text}")
-        else
+        elsif file_url.present?
           @response = @ruby_llm_chat.ask(question_text, with: file_url)
+        else
+          raise "No file content or URL available for analysis"
         end
       end
 

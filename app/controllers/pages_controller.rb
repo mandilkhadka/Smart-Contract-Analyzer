@@ -1,5 +1,6 @@
-class PagesController < ActionController::Base
+class PagesController < ApplicationController
   def index
-    render file: Rails.root.join('app', 'views', 'layouts', 'application.html.erb'), layout: false
+    # Render the index view which uses the application layout
+    # React will mount to #root div in the layout
   end
 end

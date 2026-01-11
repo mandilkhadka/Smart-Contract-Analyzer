@@ -31,7 +31,6 @@ This app automates the process by extracting text from uploaded PDFs, identifyin
 ## 🖼️ Screenshot
 
 ![Home Page](screenshots/home.png)
-*Clean, intuitive drag-and-drop interface for uploading and analyzing contracts*
 
 ---
 
